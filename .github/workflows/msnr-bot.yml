@@ -2,15 +2,16 @@ name: MSNR Bot 24-7
 
 on:
   schedule:
-    - cron: "*/30 * * * *"      # كل نص ساعة بيتأكد إن البوت شغّال (إذا شغّال، الجلسة الجديدة بتستنى دورها)
+    - cron: "*/30 * * * *"      # احتياط: كل نص ساعة بيتأكد إن البوت شغّال
   workflow_dispatch:            # زر تشغيل يدوي
 
 concurrency:
   group: msnr-bot
-  cancel-in-progress: false     # جلسة وحدة بس بنفس الوقت، والثانية بتبلش أول ما تخلص الأولى
+  cancel-in-progress: false     # جلسة وحدة بس بنفس الوقت، والثانية بتستنى دورها
 
 permissions:
   contents: write
+  actions: write
 
 jobs:
   bot:
@@ -21,13 +22,15 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Run MSNR bot
+      - name: Run bot
         env:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           TG_CHAT: ${{ secrets.TG_CHAT }}
           TD_KEY: ${{ secrets.TD_KEY }}
           RUN_MINUTES: "340"
-        run: python msnr_bot/cloud_bot.py
+        run: |
+          date +%s > /tmp/started
+          python msnr_bot/cloud_bot.py
       - name: Save state
         if: always()
         run: |
@@ -35,4 +38,19 @@ jobs:
           git config user.email "msnr-bot@users.noreply.github.com"
           git add msnr_bot/cloud_state.json || true
           git commit -m "bot state" || true
+          git pull --rebase -q || true
           git push || true
+      - name: Start next session
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # بيشغّل الجلسة الجاية بس إذا هاي الجلسة اشتغلت طبيعي (أكثر من 30 دقيقة)
+          started=$(cat /tmp/started 2>/dev/null || echo 0)
+          ran=$(( $(date +%s) - started ))
+          if [ "$ran" -gt 1800 ]; then
+            gh workflow run msnr-bot.yml --ref main --repo "$GITHUB_REPOSITORY"
+            echo "next session requested (ran ${ran}s)"
+          else
+            echo "session ran only ${ran}s — not restarting automatically"
+          fi
