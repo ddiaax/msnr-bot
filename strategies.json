@@ -1,5 +1,5 @@
 {
-  "_شرح": "كل استراتيجية إلها قسم. enabled = true شغّالة / false موقفة. أي تعديل هون بيطبق خلال 5 دقائق بدون إعادة تشغيل",
+  "_شرح": "كل استراتيجية إلها قسم. enabled = true شغّالة / false موقفة. tf_min = فريم الاستراتيجية بالدقائق. أي تعديل هون بيطبق خلال دقيقتين بدون إعادة تشغيل",
   "msnr": {
     "enabled": true,
     "tag": "MSNR",
@@ -14,6 +14,87 @@
     "strong_body_atr": 1.5,
     "pending_valid_min": 180,
     "mss_window_min": 120,
-    "send_fills_and_closes": true
+    "send_fills_and_closes": true,
+    "tf_min": 5
+  },
+  "sh": {
+    "enabled": true,
+    "tag": "SH v3",
+    "tf_min": 1,
+    "accountSize": 10000,
+    "riskPct": 0.5,
+    "send_fills_and_closes": true,
+    "tv": {
+      "scalp": true,
+      "scMainTF": 5,
+      "scSubTF": 1,
+      "scRR": 1.5,
+      "scMinSLpips": 30,
+      "scRetest": 4,
+      "scMaxTrades": 9,
+      "mainTF": 5,
+      "subTF": 5,
+      "rr": 2.0,
+      "retestBars": 6,
+      "maxTrades": 3,
+      "minSLpips": 0,
+      "maxMain": 12,
+      "maxSub": 20,
+      "pvL": 3,
+      "pvR": 2,
+      "depthATR": 1.0,
+      "clusterTol": 0.3,
+      "usePsych": true,
+      "trigMode": "both",
+      "onlyStrong": false,
+      "useBody": true,
+      "bodyMin": 0.6,
+      "farATR": 1.0,
+      "farMode": "limit",
+      "trendMode": "none",
+      "emaLen": 200,
+      "useRoom": true,
+      "minRoomR": 1.5,
+      "useRegime": true,
+      "regimeMult": 0.8,
+      "minScore": 2,
+      "useRvol": true,
+      "rvolMode": "same_time",
+      "rvolLen": 20,
+      "rvolMin": 1.2,
+      "rvolMax": 0,
+      "rvolStrong": 1.8,
+      "useDelta": true,
+      "deltaMin": 0.15,
+      "deltaStrong": 0.3,
+      "useFlow": true,
+      "flowLen": 6,
+      "slMode": "sub",
+      "bufPips": 20,
+      "pipSize": 0.1,
+      "minSLatr": 1.0,
+      "maxSLatr": 0,
+      "useBE": true,
+      "beAtR": 1.0,
+      "useSessions": true,
+      "sessions": {
+        "tokyo": {
+          "on": true,
+          "range": "0000-0200"
+        },
+        "london": {
+          "on": true,
+          "range": "0700-0900"
+        },
+        "newyork": {
+          "on": true,
+          "range": "1300-1500"
+        }
+      },
+      "stopAfterWin": false,
+      "useNews": false,
+      "newsDates": []
+    },
+    "require_volume": true
   }
 }
