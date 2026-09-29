@@ -4,7 +4,7 @@ MSNR Bot — نسخة السحابة (GitHub Actions + Twelve Data)
 بيشتغل بدون لابتوب وبدون MT5. نفس محرك msnr_bot.py بالضبط.
 المتغيرات (GitHub Secrets):  TG_TOKEN · TG_CHAT · TD_KEY
 """
-import os, sys, json, time, datetime, urllib.request, urllib.parse
+import os, sys, json, time, datetime, urllib.request, urllib.parse, urllib.error
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import msnr_bot as core
 
@@ -25,8 +25,13 @@ def td_bars(outputsize=5000, end=None):
     if end: q['end_date'] = end
     url = 'https://api.twelvedata.com/time_series?' + urllib.parse.urlencode(q)
     _last_call[0] = time.time()
-    with urllib.request.urlopen(url, timeout=30) as r:
-        d = json.loads(r.read().decode('utf-8'))
+    try:
+        with urllib.request.urlopen(url, timeout=30) as r:
+            d = json.loads(r.read().decode('utf-8'))
+    except urllib.error.HTTPError as e:
+        try: d = json.loads(e.read().decode('utf-8'))
+        except Exception: d = {'message': f'HTTP {e.code}'}
+        raise RuntimeError(f"Twelve Data rejected the request: {d.get('message', d)}")
     if d.get('status') != 'ok':
         raise RuntimeError(f"Twelve Data: {d.get('message', d)}")
     out = []
@@ -53,7 +58,12 @@ def main():
     state = json.load(open(STATE, encoding='utf-8')) if os.path.exists(STATE) else {}
     sent = set(state.get('sent', []))
     started = time.time()
-    m1 = load_history()
+    try:
+        m1 = load_history()
+    except Exception as ex:
+        log(f"FAILED to load prices: {ex}")
+        core.tg_send(cfg, f"[{cfg['tag']}] ⚠ البوت السحابي ما قدر يجيب الأسعار من Twelve Data:\n{ex}\nتأكد من مفتاح TD_KEY")
+        raise
     log(f"history {len(m1)} bars · {datetime.datetime.utcfromtimestamp(m1[0][0])} → {datetime.datetime.utcfromtimestamp(m1[-1][0])}")
     first_cycle = True; last_bar = None
     if not state.get('hello'):
