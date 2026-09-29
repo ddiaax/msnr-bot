@@ -1,0 +1,19 @@
+{
+  "_شرح": "كل استراتيجية إلها قسم. enabled = true شغّالة / false موقفة. أي تعديل هون بيطبق خلال 5 دقائق بدون إعادة تشغيل",
+  "msnr": {
+    "enabled": true,
+    "tag": "MSNR",
+    "stop_pips": 50,
+    "tp_min": 100,
+    "tp_max": 200,
+    "max_positions": 4,
+    "max_losses_per_day": 2,
+    "trend_1h_filter": true,
+    "use_crt_target": true,
+    "auto_market_entry": true,
+    "strong_body_atr": 1.5,
+    "pending_valid_min": 180,
+    "mss_window_min": 120,
+    "send_fills_and_closes": true
+  }
+}
