@@ -18,17 +18,19 @@
 - وقسم باسمها بـ**strategies.json**
 - الكود الجديد بيشتغل مع أول جلسة جديدة (أو اضغط Actions ← MSNR Bot 24-7 ← Run workflow)
 
-## إعدادات MSNR
+## إعدادات MSNR (نسخة Pro)
 | الإعداد | المعنى |
 |---|---|
-| stop_pips | الستوب بالنقاط (50 = 5$) |
-| tp_min / tp_max | أقل وأقصى هدف بالنقاط |
+| exit_mode | fixed = ستوب ثابت + قفل ربح (الأفضل بالباك تست) · rr = هدف 2× أو 3× الستوب |
+| stop_pips | الستوب بالنقاط (30 = 3$) |
+| tp_min / tp_max | أقل وأقصى هدف (الهدف = أقرب مستوى / CRT / EQH-EQL) |
+| fx_be / fx_lock | بعد ربح fx_be نقطة الستوب بينتقل لربح fx_lock |
+| min_conf | أقل نقاط توافق (من 11) لصفقة MSS — أعلى = صفقات أقل وأقوى |
+| a_plus / a_conf / tp_max_a / a_be | صفقات A+ (توافق عالي + CRT): هدف لحد 400 وقفل بعد 60 |
+| crt_entry | دخول CRT المستقل (سحب سيولة شمعة 1H/4H) |
+| crt_sl_min / crt_sl_max / crt_rr | حدود ستوب CRT وأقل عائد |
 | max_positions | أقصى عدد صفقات بنفس الوقت |
 | max_losses_per_day | التوقف بعد عدد خسائر باليوم |
 | trend_1h_filter | فقط مع اتجاه فريم الساعة |
-| use_crt_target | هدف CRT من شموع 1H/4H |
-| auto_market_entry | دخول مباشر للفرص القوية |
-| strong_body_atr | قوة شمعة الـMSS المطلوبة للدخول المباشر |
-| pending_valid_min | صلاحية الأمر المعلّق بالدقائق |
-| mss_window_min | مهلة الـMSS بعد لمس المستوى |
-| send_fills_and_closes | رسائل التنفيذ والإغلاق |
+| use_eqt | هدف سيولة EQH/EQL |
+| auto_market_entry | دخول مباشر للفرص القوية (مطفي: أضعف بالباك تست) |
