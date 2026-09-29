@@ -101,7 +101,8 @@ def main():
         poll = 300
         try:
             settings = read_settings()
-            enabled = sorted(k for k, v in settings.items() if isinstance(v, dict) and v.get('enabled'))
+            enabled = sorted(k for k, v in settings.items() if isinstance(v, dict) and v.get('enabled')
+                             and v.get('runner', 'cloud') == 'cloud')          # "runner": "laptop" = بيشتغل على اللابتوب
             # ── تحميل/تحديث أسعار كل رمز مطلوب
             need = {}
             for n in enabled:
