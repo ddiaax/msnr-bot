@@ -1,5 +1,5 @@
 {
-  "_شرح": "كل استراتيجية إلها قسم. enabled = true شغّالة / false موقفة. tf_min = فريم الاستراتيجية بالدقائق. أي تعديل هون بيطبق خلال دقيقتين بدون إعادة تشغيل",
+  "_شرح": "كل استراتيجية إلها قسم. enabled = true شغّالة / false موقفة. module = ملف الاستراتيجية · td_symbol = رمز الأسعار · tf_min = فريمها بالدقائق. أي تعديل هون بيطبق خلال 5 دقائق بدون إعادة تشغيل",
   "msnr": {
     "enabled": true,
     "tag": "MSNR",
@@ -40,7 +40,10 @@
     "eq_tol": 15,
     "ema_len": 200,
     "fvg_age": 48,
-    "send_fills_and_closes": true
+    "send_fills_and_closes": true,
+    "module": "msnr",
+    "td_symbol": "XAU/USD",
+    "symbol": "XAUUSD"
   },
   "sh": {
     "enabled": true,
@@ -120,6 +123,63 @@
       "useNews": false,
       "newsDates": []
     },
-    "require_volume": true
+    "require_volume": true,
+    "module": "sh",
+    "td_symbol": "XAU/USD"
+  },
+  "msnr_nas": {
+    "enabled": true,
+    "tag": "MSNR NAS100 🧪",
+    "tf_min": 5,
+    "exit_mode": "rr",
+    "stop_pips": 30,
+    "tp_min": 100,
+    "tp_max": 300,
+    "rr_b": 2.0,
+    "rr_a": 3.0,
+    "rr_be": 1.0,
+    "fx_be": 30,
+    "fx_lock": 10,
+    "fx_trail": 0,
+    "max_positions": 6,
+    "max_losses_per_day": 3,
+    "trend_1h_filter": true,
+    "use_crt_target": true,
+    "use_eqt": true,
+    "min_conf": 3,
+    "a_plus": true,
+    "a_conf": 6,
+    "tp_max_a": 400,
+    "a_be": 60,
+    "crt_entry": false,
+    "crt_sl_min": 30,
+    "crt_sl_max": 150,
+    "crt_rr": 1.5,
+    "crt_buf": 5,
+    "crt_be_frac": 0.5,
+    "crt_valid_min": 240,
+    "auto_market_entry": false,
+    "strong_body_atr": 1.5,
+    "pending_valid_min": 180,
+    "mss_window_min": 120,
+    "pd_bars": 576,
+    "disp_mult": 1.0,
+    "eq_tol": 15,
+    "ema_len": 200,
+    "fvg_age": 48,
+    "send_fills_and_closes": true,
+    "module": "msnr",
+    "td_symbol": "NDX",
+    "symbol": "US100",
+    "td_hours_ny": [
+      9,
+      16
+    ],
+    "pip": 0.35,
+    "hours_ny": [
+      9,
+      16
+    ],
+    "_ملاحظة": "إعدادات خاصة بالناسداك: جلسة نيويورك بس (9-16)، RR، توافق 3+، بدون دخول CRT. pip 0.35 = نسبة حركة الناسداك للذهب. تجريبي"
   }
 }

@@ -270,8 +270,10 @@ def run_engine_pro(m1, cfg):
                     crtDir = d; crt = (e, sl, tp, tag)
         # ── إشارة جديدة
         dayStop = cfg['max_losses_per_day'] > 0 and fx_day(t) == lossDay and lossCnt >= cfg['max_losses_per_day']
+        hrs = cfg.get('hours_ny')                      # [من, لـ] بتوقيت نيويورك — اختياري
+        inHrs = hrs is None or (hrs[0] <= nyh < hrs[1])
         sDir = 0
-        if len(trades) < cfg['max_positions'] and not dayStop:
+        if len(trades) < cfg['max_positions'] and not dayStop and inHrs:
             sDir = mDir if mDir != 0 else crtDir
         if sDir != 0:
             d = sDir; isM = mDir != 0
@@ -332,16 +334,19 @@ def message_pro(ev, cfg):
     T = ev['T']; tag = f"[{cfg.get('tag', 'MSNR')}] "
     side = 'شراء' if T['dir'] == 1 else 'بيع'; icon = '🟢' if T['dir'] == 1 else '🔴'
     sym = cfg.get('symbol', 'XAUUSD')
+    pip = cfg.get('pip', 0.1)
+    # الذهب: نقاط (0.1$) · غيره (مثل الناسداك): نقاط المؤشر الحقيقية
+    u = (lambda x: f"{x:.0f}") if abs(pip - 0.1) < 1e-9 else (lambda x: f"{x * pip:.1f}")
     if ev['kind'] == 'signal':
         how = '⚡ دخول مباشر (فرصة قوية)' if T['strong'] else ('دخول فوري' if T['now'] else '⏳ أمر معلّق ' + ('Buy Limit' if T['dir'] == 1 else 'Sell Limit'))
         lines = [f"{tag}{icon} {side} {sym} · 5m  [{T['grade']}]",
                  f"{T['setup']} · {T['tag']}",
                  f"{how} {fmt(T['e'])}",
-                 f"🎯 الهدف {fmt(T['tp'])}  (+{T['tpp']:.0f})",
-                 f"🛑 الستوب {fmt(T['sl'])}  (-{T['sld']:.0f})",
+                 f"🎯 الهدف {fmt(T['tp'])}  (+{u(T['tpp'])})",
+                 f"🛑 الستوب {fmt(T['sl'])}  (-{u(T['sld'])})",
                  f"R:R 1:{T['tpp'] / max(T['sld'], 1):.1f}"]
         if T['bep'] > 0:
-            lines.append(f"🔒 بعد +{T['bep']:.0f} الستوب بينتقل لربح +{max(0, min(T['lock'], T['bep'] - 3)):.0f}")
+            lines.append(f"🔒 بعد +{u(T['bep'])} الستوب بينتقل لربح +{u(max(0, min(T['lock'], T['bep'] - 3)))}")
         lines.append(f"السعر الحالي {fmt(T['price'])} · {ny_str(ev['t'])} نيويورك")
         return '\n'.join(lines)
     if ev['kind'] == 'fill':
@@ -351,5 +356,5 @@ def message_pro(ev, cfg):
     if ev['kind'] == 'cancel':
         return f"{tag}⌛ انلغى الأمر المعلّق ({side} @ {fmt(T['e'])}) — السعر ما رجع"
     r = ev['res']
-    res = f"✓ +{r:.0f} نقطة" if r > 0.5 else ("⚪ على الدخول" if r > -1 else f"✗ {r:.0f} نقطة")
+    res = f"✓ +{u(r)} نقطة" if r > 0.5 else ("⚪ على الدخول" if r > -1 else f"✗ -{u(-r)} نقطة")
     return f"{tag}🏁 إغلاق {side} {sym} من {fmt(T['e'])}\n{res}"
