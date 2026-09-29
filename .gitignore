@@ -1,0 +1,5 @@
+# لا ترفع التوكن أبداً
+msnr_bot/config.json
+msnr_bot/state.json
+msnr_bot/*.log
+__pycache__/

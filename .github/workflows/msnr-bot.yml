@@ -1,0 +1,38 @@
+name: MSNR Bot 24-7
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"      # كل نص ساعة بيتأكد إن البوت شغّال (إذا شغّال، الجلسة الجديدة بتستنى دورها)
+  workflow_dispatch:            # زر تشغيل يدوي
+
+concurrency:
+  group: msnr-bot
+  cancel-in-progress: false     # جلسة وحدة بس بنفس الوقت، والثانية بتبلش أول ما تخلص الأولى
+
+permissions:
+  contents: write
+
+jobs:
+  bot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run MSNR bot
+        env:
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          TG_CHAT: ${{ secrets.TG_CHAT }}
+          TD_KEY: ${{ secrets.TD_KEY }}
+          RUN_MINUTES: "340"
+        run: python msnr_bot/cloud_bot.py
+      - name: Save state
+        if: always()
+        run: |
+          git config user.name "msnr-bot"
+          git config user.email "msnr-bot@users.noreply.github.com"
+          git add msnr_bot/cloud_state.json || true
+          git commit -m "bot state" || true
+          git push || true
