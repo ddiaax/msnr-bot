@@ -152,14 +152,11 @@ def main():
                         known.add(name)
                     except Exception:
                         log(f"strategy {name} failed:\n{traceback.format_exc()}")
+            if first_cycle:
+                log(f"volume from Twelve Data: {'YES, ' + str(len(VOL)) + ' bars' if VOL else 'NO'}")
             if ran:
-                first_cycle = False
                 state['sent'] = sorted(sent)[-8000:]; state['known'] = sorted(known)
                 json.dump(state, open(STATE, 'w', encoding='utf-8'))
-            if first_cycle and VOL:
-                log(f"volume available from Twelve Data: {len(VOL)} bars")
-            elif first_cycle:
-                log("no volume from Twelve Data — SH volume filters (RVOL/Δ) will be skipped")
             first_cycle = False
         except Exception as ex:
             log(f"error: {ex}")
